@@ -38,18 +38,42 @@ class MatrixAlgorithmsTest extends PHPUnit_Framework_TestCase
 			0.2,  4, 3.8;
 			0.4,  0, 1.6'
 		);
-		$expP = MatrixFactory::fromString(
-			'0, 0, 1;
-			 1, 0, 0;
-			 0, 1, 0'
-		);
+		$expP = array(2, 0, 1);
 
 		list($C, $P, $singular, $even) = MatrixAlgorithms::LUP($this->A);
 
 		$this->assertEquals($expC->getArray(), $C->getArray());
-		$this->assertEquals($expP->getArray(), $P->getArray());
+		$this->assertEquals($expP, $P);
 		$this->assertTrue(!$singular);
 		$this->assertEquals(true, $even);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testLUPNonSquare()
+	{
+		$A = MatrixFactory::fromString('1, 2');
+
+		MatrixAlgorithms::inverseMatrix($A);
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testLUPNonMatrix()
+	{
+		MatrixAlgorithms::inverseMatrix(1);
+	}
+
+	public function testLUP_solve()
+	{
+		$A = MatrixFactory::fromString('1, 2; 3, 4');
+		$b = MatrixFactory::fromString('4;5');
+		$x = MatrixFactory::fromString('-3; 3.5');
+
+		list($C, $P) = MatrixAlgorithms::LUP($A);
+		$this->assertEquals($x, MatrixAlgorithms::LUP_solve($C, $P, $b));
 	}
 
 	public function testSingularMatrixLUP()
@@ -92,18 +116,31 @@ class MatrixAlgorithmsTest extends PHPUnit_Framework_TestCase
 	public function testInverseMatrix()
 	{
 		$A = MatrixFactory::fromString(
-			'1 2;
-			 1 1'
+			'1, 2;
+			 1, 1'
 		);
 
 		$expInv = MatrixFactory::fromString(
-			'-1  2;
-			  1 -1'
+			'-1,  2;
+			  1, -1'
 		);
 
 		$inv = MatrixAlgorithms::inverseMatrix($A);
 
 		$this->assertEquals($expInv->getArray(), $inv->getArray());
+	}
+
+	/**
+	 * @expectedException LogicException
+	 */
+	public function testSingularMatrixInverse()
+	{
+		$A = MatrixFactory::fromString(
+			'1, 2;
+			 1, 2'
+		);
+
+		MatrixAlgorithms::inverseMatrix($A);
 	}
 
 	public function testTranspose()
@@ -115,5 +152,10 @@ class MatrixAlgorithmsTest extends PHPUnit_Framework_TestCase
 		);
 
 		$this->assertEquals($trans_A->getArray(), MatrixAlgorithms::transpose($this->A)->getArray());
+	}
+
+	public function testPnorm()
+	{
+
 	}
 }

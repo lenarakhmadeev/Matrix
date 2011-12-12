@@ -147,7 +147,7 @@ class Matrix
 	}
 
 	/**
-	 * Return matrix with setted column
+	 * Return this matrix with setted column
 	 *
 	 * @param int $col
 	 * @param Matrix $value
@@ -166,13 +166,11 @@ class Matrix
 			throw new OutOfRangeException("Count of rows must equals");
 		}
 
-		$new_matrix = clone $this;
-
 		for ($row = 0; $row < $rows; $row++) {
-			$new_matrix->setElem($row, $col, $value->getElem($row, 0));
+			$this->setElem($row, $col, $value->getElem($row, 0));
 		}
 
-		return $new_matrix;
+		return $this;
 	}
 
 	/**
@@ -213,13 +211,11 @@ class Matrix
 			throw new OutOfRangeException("Count of cols must equals");
 		}
 
-		$new_matrix = clone $this;
-
 		for ($col = 0; $col < $cols; $col++) {
-			$new_matrix->setElem($row, $col, $value->getElem(0, $col));
+			$this->setElem($row, $col, $value->getElem(0, $col));
 		}
 
-		return $new_matrix;
+		return $this;
 	}
 
 	/**
@@ -299,8 +295,8 @@ class Matrix
 		$col1_value = $this->getColumn($col1);
 		$col2_value = $this->getColumn($col2);
 		$new_matrix = clone $this;
-		$new_matrix = $new_matrix->setColumn($col1, $col2_value);
-		$new_matrix = $new_matrix->setColumn($col2, $col1_value);
+		$new_matrix->setColumn($col1, $col2_value);
+		$new_matrix->setColumn($col2, $col1_value);
 
 		return $new_matrix;
 	}
