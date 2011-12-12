@@ -6,7 +6,6 @@
 
 require_once 'matrix_algorithms.php';
 require_once 'matrix_factory.php';
-require_once 'matrix_exception.php';
 
 class Matrix
 {
