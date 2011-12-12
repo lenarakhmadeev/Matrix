@@ -1,6 +1,6 @@
 <?php
 
-require_once '/apps/test/matrix/matrix.php';
+require_once __DIR__ . '/../matrix.php';
 
 /**
  * Test class for MatrixAlgorithms.
