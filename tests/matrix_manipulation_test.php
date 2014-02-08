@@ -164,4 +164,38 @@ class MatrixManipulationTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expect->getArray(), $value->swapRowCol(1, 1)->getArray());
 	}
+
+	public function testInsertColumn()
+	{
+		$value = MatrixFactory::fromString(
+			'1, 3; 4, 6; 7, 9'
+		);
+
+		$insertion = MatrixFactory::fromString(
+			'2; 5; 8'
+		);
+
+		$expect = MatrixFactory::fromString(
+			'1, 2, 3; 4, 5, 6; 7, 8, 9'
+		);
+
+		$this->assertEquals($expect->getArray(), $value->insertColumn(1, $insertion)->getArray());
+	}
+
+	public function testInsertRow()
+	{
+		$value = MatrixFactory::fromString(
+			'1, 2, 3; 7, 8, 9'
+		);
+
+		$insertion = MatrixFactory::fromString(
+			'4, 5, 6'
+		);
+
+		$expect = MatrixFactory::fromString(
+			'1, 2, 3; 4, 5, 6; 7, 8, 9'
+		);
+
+		$this->assertEquals($expect->getArray(), $value->insertRow(1, $insertion)->getArray());
+	}
 }
