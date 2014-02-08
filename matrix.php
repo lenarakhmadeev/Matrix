@@ -316,19 +316,84 @@ class Matrix
 
 	}
 
+	/**
+	 * Return matrix with deleted column
+	 *
+	 * @param int $col
+	 * @return Matrix
+	 * @throws OutOfRangeException
+	 */
 	public function deleteColumn($col)
 	{
+		$cols = $this->getColsCount();
 
+		if ($col >= $cols) {
+			throw new OutOfRangeException("Invalid offset. col = $col must be lower $cols");
+		}
+
+		foreach ($this->matrix as &$row) {
+			array_splice($row, $col, 1);
+		}
+
+		return $this;
 	}
 
+	/**
+	 * Return matrix with deleted row
+	 *
+	 * @param int $row
+	 * @return Matrix
+	 * @throws OutOfRangeException
+	 */
 	public function deleteRow($row)
 	{
+		$rows = $this->getRowsCount();
 
+		if ($row >= $rows) {
+			throw new OutOfRangeException("Invalid offset. row = $row must be lower $rows");
+		}
+
+		array_splice($this->matrix, $row, 1);
+
+		return $this;
 	}
 
-	function swapRowCol ($row, $col)
+	/**
+	 * Swap row and col
+	 *
+	 * @param $row
+	 * @param $col
+	 * @return $this
+	 * @throws OutOfRangeException
+	 * @throws InvalidArgumentException
+	 */
+	function swapRowCol($row, $col)
 	{
+		if (!$this->isSquare()) {
+			throw new InvalidArgumentException("Matrix must be square");
+		}
 
+		if ($row != $col) {
+			throw new InvalidArgumentException("row = $row must be equal col = $col");
+		}
+
+		list($rows, $cols) = $this->getSize();
+
+		if ($row >= $rows) {
+			throw new OutOfRangeException("Invalid offset. row = $row must be lower $rows");
+		}
+
+		if ($col >= $cols) {
+			throw new OutOfRangeException("Invalid offset. col = $col must be lower $cols");
+		}
+
+		for ($i = 0; $i < $cols; $i++) {
+			$tmp = $this->matrix[$row][$i];
+			$this->matrix[$row][$i] = $this->matrix[$i][$col];
+			$this->matrix[$i][$col] = $tmp;
+		}
+
+		return $this;
 	}
 
 	/// Matrix operations
