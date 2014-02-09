@@ -198,6 +198,13 @@ class Matrix
 
 	// TODO : asd
 
+	/**
+	 * @param int $row
+	 * @param Matrix $value
+	 * @return Matrix
+	 * @throws OutOfRangeException
+	 * @throws InvalidArgumentException
+	 */
 	public function setRow($row, $value)
 	{
 		if (!Matrix::isMatrix($value)) {
@@ -306,29 +313,138 @@ class Matrix
 		array($this->matrix[$row2], $this->matrix[$row1]);
 	}
 
-	public function insertColumn($col1, $col2)
+	/**
+	 * Insert column
+	 *
+	 * @param int $pos
+	 * @param Matrix $value
+	 * @return Matrix
+	 * @throws OutOfRangeException
+	 * @throws InvalidArgumentException
+	 */
+	public function insertColumn($pos, $value)
 	{
+		if (!Matrix::isMatrix($value)) {
+			throw new InvalidArgumentException('Argument $value must be matrix. '
+				. gettype($value) . ' given');
+		}
 
+		if (($rows = $this->getRowsCount()) !== $value->getRowsCount()
+			|| $value->getColsCount() !== 1) {
+			throw new OutOfRangeException("Count of rows must equals");
+		}
+
+		for ($row = 0; $row < $rows; $row++) {
+			array_splice($this->matrix[$row], $pos, 0, $value->getElem($row, 0));
+		}
+
+		return $this;
 	}
 
-	public function insertRow($row1, $row2)
+	/**
+	 * Insert row
+	 *
+	 * @param int $pos
+	 * @param Matrix $value
+	 * @return Matrix
+	 * @throws OutOfRangeException
+	 * @throws InvalidArgumentException
+	 */
+	public function insertRow($pos, $value)
 	{
+		if (!Matrix::isMatrix($value)) {
+			throw new InvalidArgumentException('Argument $value must be matrix. '
+				. gettype($value) . ' given');
+		}
 
+		if (($cols = $this->getColsCount()) !== $value->getColsCount()
+			|| $value->getRowsCount() !== 1) {
+			throw new OutOfRangeException("Count of cols must equals");
+		}
+
+		array_splice($this->matrix, $pos, 0, array($value->getRow(0, true)));
+
+		return $this;
 	}
 
+	/**
+	 * Return matrix with deleted column
+	 *
+	 * @param int $col
+	 * @return Matrix
+	 * @throws OutOfRangeException
+	 */
 	public function deleteColumn($col)
 	{
+		$cols = $this->getColsCount();
 
+		if ($col >= $cols) {
+			throw new OutOfRangeException("Invalid offset. col = $col must be lower $cols");
+		}
+
+		foreach ($this->matrix as &$row) {
+			array_splice($row, $col, 1);
+		}
+
+		return $this;
 	}
 
+	/**
+	 * Return matrix with deleted row
+	 *
+	 * @param int $row
+	 * @return Matrix
+	 * @throws OutOfRangeException
+	 */
 	public function deleteRow($row)
 	{
+		$rows = $this->getRowsCount();
 
+		if ($row >= $rows) {
+			throw new OutOfRangeException("Invalid offset. row = $row must be lower $rows");
+		}
+
+		array_splice($this->matrix, $row, 1);
+
+		return $this;
 	}
 
-	function swapRowCol ($row, $col)
+	/**
+	 * Swap row and col
+	 *
+	 * @param $row
+	 * @param $col
+	 * @return $this
+	 * @throws OutOfRangeException
+	 * @throws InvalidArgumentException
+	 */
+	function swapRowCol($row, $col)
 	{
+		if (!$this->isSquare()) {
+			throw new InvalidArgumentException("Matrix must be square");
+		}
 
+		if ($row != $col) {
+			throw new InvalidArgumentException("row = $row must be equal col = $col");
+		}
+
+		list($rows, $cols) = $this->getSize();
+
+		if ($row >= $rows) {
+			throw new OutOfRangeException("Invalid offset. row = $row must be lower $rows");
+		}
+
+		if ($col >= $cols) {
+			throw new OutOfRangeException("Invalid offset. col = $col must be lower $cols");
+		}
+
+		for ($i = 0; $i < $cols; $i++) {
+			$tmp = $this->matrix[$row][$i];
+			$this->matrix[$row][$i] = $this->matrix[$i][$col];
+			$this->matrix[$i][$col] = $tmp;
+		}
+
+		return $this;
 	}
 
 	/// Matrix operations
